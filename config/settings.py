@@ -14,10 +14,16 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv()
+
+ENV_FILE_EXISTS = Path(BASE_DIR / ".env").exists()
+if not ENV_FILE_EXISTS:
+    raise RuntimeError(
+        "Missing .env file. Create it from .env.example:\ncp .env.example .env"
+    )
 
 
 # Quick-start development settings - unsuitable for production

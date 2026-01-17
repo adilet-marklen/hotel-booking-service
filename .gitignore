@@ -27,6 +27,7 @@ staticfiles/
 # =====================
 .env
 .env.*
+!.env.example
 
 # =====================
 # Pytest
