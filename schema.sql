@@ -1,7 +1,7 @@
 CREATE TABLE rooms (
   id BIGSERIAL PRIMARY KEY,
   description TEXT NOT NULL,
-  price NUMERIC(10,2) NOT NULL CHECK (price > 0),
+  price INTEGER NOT NULL CHECK (price > 0),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -14,3 +14,5 @@ CREATE TABLE bookings (
 );
 
 CREATE INDEX bookings_room_start_idx ON bookings (room_id, date_start);
+CREATE INDEX rooms_price_idx ON rooms (price);
+CREATE INDEX rooms_created_at_idx ON rooms (created_at);

@@ -248,7 +248,7 @@ HTTP JSON API без авторизации. Данные хранятся в Po
 curl -X POST \
   -H "Content-Type: application/json" \
   -d '{"room_id":24,"date_start":"2021-12-30","date_end":"2022-01-02"}' \
-  http://localhost:9000/bookings/create
+  http://127.0.0.1:8000/bookings/create
 ```
 
 ---
@@ -327,15 +327,18 @@ curl -X POST \
 
 ## **Схема БД**
 
-- SQL для создания таблиц: `schema.sql`
+- SQL для создания таблиц: `schema.sql` (по требованию ТЗ)
 
 ---
 
-## **Запуск**
+## **Запуск (локально)**
 
-1. Запустить PostgreSQL и создать пустую БД.
-2. Применить схему: `psql <CONNECTION_STRING> -f schema.sql`
-3. Запустить сервис (раздел будет дополнен после реализации кода).
+```bash
+cp .env.example .env
+poetry install
+psql <CONNECTION_STRING> -f schema.sql
+poetry run python manage.py runserver 0.0.0.0:8000
+```
 
 ---
 
@@ -353,6 +356,10 @@ docker compose up --build
 ```bash
 cp .env.example .env
 ```
+
+Примечание: `schema.sql` применяется автоматически при первом запуске контейнера базы
+данных. Если база уже создана, нужно удалить volume `postgres_data` для повторного
+инициализирования.
 
 ---
 
@@ -399,7 +406,7 @@ curl -X POST \
 **Список броней номера:**
 
 ```bash
-curl -X GET "http://127.0.0.1:8000/bookings?room_id=1"
+curl -X GET "http://127.0.0.1:8000/bookings/list?room_id=1"
 ```
 
 **Ответ:**
@@ -408,10 +415,22 @@ curl -X GET "http://127.0.0.1:8000/bookings?room_id=1"
 [{"booking_id": 1444, "date_start": "2021-12-30", "date_end": "2022-01-02"}]
 ```
 
-**Ошибка (невалидные даты):**
+**Ошибка (create booking: невалидные даты):**
 
 ```
 { "error": "Invalid dates" }
+```
+
+**Ошибка (create booking: room не найден):**
+
+```
+{ "error": "Room not found" }
+```
+
+**Ошибка (list bookings: room не найден):**
+
+```
+{ "error": "Room not found" }
 ```
 
 ---
@@ -420,3 +439,4 @@ curl -X GET "http://127.0.0.1:8000/bookings?room_id=1"
 
 - Формат данных — JSON (а не form-urlencoded), чтобы соответствовать требованию JSON API.
 - Эндпоинт списка броней — `/bookings/list`, как в примерах задания.
+- Миграции не используются для запуска, таблицы создаются через `schema.sql`.

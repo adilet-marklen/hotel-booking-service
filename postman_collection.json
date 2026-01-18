@@ -100,9 +100,9 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/bookings?room_id=1",
+              "raw": "{{baseUrl}}/bookings/list?room_id=1",
               "host": ["{{baseUrl}}"],
-              "path": ["bookings"],
+              "path": ["bookings", "list"],
               "query": [
                 { "key": "room_id", "value": "1" }
               ]
@@ -161,9 +161,9 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/bookings?room_id=999999",
+              "raw": "{{baseUrl}}/bookings/list?room_id=999999",
               "host": ["{{baseUrl}}"],
-              "path": ["bookings"],
+              "path": ["bookings", "list"],
               "query": [
                 { "key": "room_id", "value": "999999" }
               ]
