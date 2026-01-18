@@ -356,6 +356,66 @@ cp .env.example .env
 
 ---
 
+## **Тесты (Docker Compose)**
+
+```bash
+docker compose exec web pytest
+```
+
+---
+
+## **Примеры curl**
+
+**Создать номер:**
+
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"description":"Cozy room with sea view","price":7500}' \
+  http://127.0.0.1:8000/rooms/create
+```
+
+**Ответ:**
+
+```
+{ "room_id": 1 }
+```
+
+**Создать бронь:**
+
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"room_id":1,"date_start":"2021-12-30","date_end":"2022-01-02"}' \
+  http://127.0.0.1:8000/bookings/create
+```
+
+**Ответ:**
+
+```
+{ "booking_id": 1444 }
+```
+
+**Список броней номера:**
+
+```bash
+curl -X GET "http://127.0.0.1:8000/bookings?room_id=1"
+```
+
+**Ответ:**
+
+```
+[{"booking_id": 1444, "date_start": "2021-12-30", "date_end": "2022-01-02"}]
+```
+
+**Ошибка (невалидные даты):**
+
+```
+{ "error": "Invalid dates" }
+```
+
+---
+
 ## **Вопросы и принятые решения**
 
 - Формат данных — JSON (а не form-urlencoded), чтобы соответствовать требованию JSON API.

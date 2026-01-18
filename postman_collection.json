@@ -1,0 +1,176 @@
+{
+  "info": {
+    "name": "hotel-booking-service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Rooms",
+      "item": [
+        {
+          "name": "Create room",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/rooms/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["rooms", "create"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Cozy room with sea view\",\n  \"price\": 7500\n}"
+            }
+          }
+        },
+        {
+          "name": "List rooms (created_at asc)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/rooms?sort=created_at&order=asc",
+              "host": ["{{baseUrl}}"],
+              "path": ["rooms"],
+              "query": [
+                { "key": "sort", "value": "created_at" },
+                { "key": "order", "value": "asc" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List rooms (price desc)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/rooms?sort=price&order=desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["rooms"],
+              "query": [
+                { "key": "sort", "value": "price" },
+                { "key": "order", "value": "desc" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete room",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/rooms/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["rooms", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Create booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings", "create"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"room_id\": 1,\n  \"date_start\": \"2021-12-30\",\n  \"date_end\": \"2022-01-02\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List bookings by room",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/bookings?room_id=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings"],
+              "query": [
+                { "key": "room_id", "value": "1" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete booking",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/bookings/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create booking (invalid dates)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings", "create"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"room_id\": 1,\n  \"date_start\": \"2022-02-10\",\n  \"date_end\": \"2022-02-01\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create booking (room not found)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings", "create"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"room_id\": 999999,\n  \"date_start\": \"2021-12-30\",\n  \"date_end\": \"2022-01-02\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List bookings (room not found)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/bookings?room_id=999999",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings"],
+              "query": [
+                { "key": "room_id", "value": "999999" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

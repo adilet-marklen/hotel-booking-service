@@ -27,7 +27,7 @@ class Booking(models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
-                check=models.Q(date_end__gte=F("date_start")),
+                condition=models.Q(date_end__gte=F("date_start")),
                 name="booking_date_end_gte_date_start",
             ),
         ]
