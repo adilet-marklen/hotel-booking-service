@@ -1,15 +1,9 @@
-from dataclasses import dataclass
-
 from django.db.models import QuerySet
 
 from hotel.models import Booking, Room
 from hotel.serializers import BookingCreateSerializer
 
-
-@dataclass
-class BookingServiceError(Exception):
-    message: str
-    status_code: int
+from .exceptions import BookingServiceError
 
 
 def create_booking(payload: dict) -> Booking:
@@ -24,29 +18,27 @@ def create_booking(payload: dict) -> Booking:
     if date_end < date_start:
         raise BookingServiceError("Invalid dates", 400)
 
-    try:
-        room = Room.objects.get(id=room_id)
-    except Room.DoesNotExist as exc:
-        raise BookingServiceError("Room not found", 404) from exc
+    room = Room.objects.filter(id=room_id).first()
+    if room is None:
+        raise BookingServiceError("Room not found", 404)
 
     return Booking.objects.create(room=room, date_start=date_start, date_end=date_end)
 
 
 def delete_booking(booking_id: int) -> None:
-    try:
-        booking = Booking.objects.get(pk=booking_id)
-    except Booking.DoesNotExist as exc:
-        raise BookingServiceError("Booking not found", 404) from exc
+    booking = Booking.objects.filter(pk=booking_id).first()
+    if booking is None:
+        raise BookingServiceError("Booking not found", 404)
     booking.delete()
 
 
 def list_bookings(room_id_raw: str | None) -> QuerySet[Booking]:
     if not room_id_raw:
         raise BookingServiceError("room_id is required", 400)
-    try:
-        room_id = int(room_id_raw)
-    except ValueError as exc:
-        raise BookingServiceError("room_id is required", 400) from exc
+    room_id_text = room_id_raw.strip()
+    if not room_id_text.isdigit():
+        raise BookingServiceError("room_id is required", 400)
+    room_id = int(room_id_text)
 
     if not Room.objects.filter(id=room_id).exists():
         raise BookingServiceError("Room not found", 404)

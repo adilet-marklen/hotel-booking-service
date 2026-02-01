@@ -1,15 +1,9 @@
-from dataclasses import dataclass
-
 from django.db.models import QuerySet
 
 from hotel.models import Room
 from hotel.serializers import RoomCreateSerializer
 
-
-@dataclass
-class RoomServiceError(Exception):
-    message: str
-    status_code: int
+from .exceptions import RoomServiceError
 
 
 def create_room(payload: dict) -> Room:
@@ -20,10 +14,9 @@ def create_room(payload: dict) -> Room:
 
 
 def delete_room(room_id: int) -> None:
-    try:
-        room = Room.objects.get(pk=room_id)
-    except Room.DoesNotExist as exc:
-        raise RoomServiceError("Room not found", 404) from exc
+    room = Room.objects.filter(pk=room_id).first()
+    if room is None:
+        raise RoomServiceError("Room not found", 404)
     room.delete()
 
 

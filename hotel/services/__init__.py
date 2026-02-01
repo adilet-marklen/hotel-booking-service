@@ -1,4 +1,3 @@
-from .bookings import BookingServiceError
-from .rooms import RoomServiceError
+from .exceptions import BookingServiceError, RoomServiceError
 
 __all__ = ["BookingServiceError", "RoomServiceError"]

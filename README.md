@@ -1,10 +1,10 @@
 # **Mini-spec: сервис бронирования отелей**
 
-  
+
 
 ## **Цель**
 
-  
+
 
 Сервис для управления номерами отелей и бронированиями.
 
@@ -14,17 +14,17 @@ HTTP JSON API без авторизации. Данные хранятся в Po
 
 ## **API**
 
-  
+
 
 ### **Rooms (номера)**
 
-  
+
 
 #### **Создать номер**
 
 **POST** /rooms/create
 
-  
+
 
 **Request (JSON):**
 
@@ -46,7 +46,7 @@ HTTP JSON API без авторизации. Данные хранятся в Po
 **Ошибки:**
 
 - 400 — { "error": "Invalid payload" }
-    
+
 
 ---
 
@@ -54,7 +54,7 @@ HTTP JSON API без авторизации. Данные хранятся в Po
 
 **DELETE** /rooms/{room_id}
 
-  
+
 
 **Response (200):**
 
@@ -67,7 +67,7 @@ HTTP JSON API без авторизации. Данные хранятся в Po
 **Ошибки:**
 
 - 404 — { "error": "Room not found" }
-    
+
 
 ---
 
@@ -75,16 +75,16 @@ HTTP JSON API без авторизации. Данные хранятся в Po
 
 **GET** /rooms?sort=price|created_at&order=asc|desc
 
-  
+
 
 **Параметры запроса:**
 
 - sort — price или created_at (по умолчанию created_at)
-    
-- order — asc или desc (по умолчанию asc)
-    
 
-  
+- order — asc или desc (по умолчанию asc)
+
+
+
 
 **Response (200):**
 
@@ -102,19 +102,19 @@ HTTP JSON API без авторизации. Данные хранятся в Po
 **Ошибки:**
 
 - 400 — { "error": "Invalid sort or order" }
-    
+
 
 ---
 
 ### **Bookings (бронирования)**
 
-  
+
 
 #### **Создать бронь**
 
 **POST** /bookings/create
 
-  
+
 
 **Request (JSON):**
 
@@ -137,9 +137,9 @@ HTTP JSON API без авторизации. Данные хранятся в Po
 **Ошибки:**
 
 - 404 — { "error": "Room not found" }
-    
+
 - 400 — { "error": "Invalid dates" }
-    
+
 
 ---
 
@@ -147,7 +147,7 @@ HTTP JSON API без авторизации. Данные хранятся в Po
 
 **DELETE** /bookings/{booking_id}
 
-  
+
 
 **Response (200):**
 
@@ -160,7 +160,7 @@ HTTP JSON API без авторизации. Данные хранятся в Po
 **Ошибки:**
 
 - 404 — { "error": "Booking not found" }
-    
+
 
 ---
 
@@ -168,16 +168,16 @@ HTTP JSON API без авторизации. Данные хранятся в Po
 
 **GET** /bookings/list?room_id={room_id}
 
-  
+
 
 **Поведение:**
 
 - параметр room_id обязателен
-    
-- бронирования сортируются по date_start по возрастанию
-    
 
-  
+- бронирования сортируются по date_start по возрастанию
+
+
+
 
 **Response (200):**
 
@@ -194,46 +194,46 @@ HTTP JSON API без авторизации. Данные хранятся в Po
 **Ошибки:**
 
 - 400 — { "error": "room_id is required" }
-    
+
 - 404 — { "error": "Room not found" }
-    
+
 
 ---
 
 ## **Модель данных**
 
-  
+
 
 ### **Room**
 
 - id — primary key
-    
-- description — текст, не пустой
-    
-- price — число, больше 0
-    
-- created_at — дата создания
-    
 
-  
+- description — текст, не пустой
+
+- price — число, больше 0
+
+- created_at — дата создания
+
+
+
 
 ### **Booking**
 
 - id — primary key
-    
-- room_id — foreign key → Room (CASCADE)
-    
-- date_start — дата начала
-    
-- date_end — дата окончания
-    
 
-  
+- room_id — foreign key → Room (CASCADE)
+
+- date_start — дата начала
+
+- date_end — дата окончания
+
+
+
 
 **Индексы:**
 
 - (room_id, date_start) для быстрого получения списка броней номера
-    
+
 
 ---
 
@@ -255,79 +255,73 @@ curl -X POST \
 
 ## **Валидации и правила**
 
-  
+
 
 ### **Rooms**
 
 - description — непустая строка
-    
-- price — положительное число
-    
 
-  
+- price — положительное число
+
+
+
 
 ### **Bookings**
 
 - room_id должен существовать
-    
+
 - формат дат — YYYY-MM-DD
-    
+
 - date_end не может быть меньше date_start
-    
+
 
 ---
 
 ## **Ошибки и HTTP-коды**
 
 - Формат ошибки:
-    
+
 
 ```
 { "error": "<message>" }
 ```
 
 - Коды:
-    
+
     - 200 — успешные GET / DELETE
-        
+
     - 201 — успешные POST
-        
+
     - 400 — невалидные данные
-        
+
     - 404 — сущность не найдена
-        
-    
+
+
 
 ---
 
 ## **Ограничения (осознанные)**
 
 - Нет авторизации
-    
+
 - Нет пагинации
-    
+
 - Нет сложной бизнес-логики
-    
+
 - Проверка пересечения дат бронирования не реализована в основной версии
-    
+
 
 ---
 
 ## **Дополнительное усложнение (опционально)**
 
-  
+
 
 Реализовать проверку пересечения дат бронирования.
 
 При попытке создать бронь, пересекающуюся с существующей, возвращать:
 
 - 409 — { "error": "Room is not available for selected dates" }
-    
----
-
-## **Схема БД**
-
-- SQL для создания таблиц: `schema.sql` (по требованию ТЗ)
 
 ---
 
@@ -336,7 +330,7 @@ curl -X POST \
 ```bash
 cp .env.example .env
 poetry install
-psql <CONNECTION_STRING> -f schema.sql
+poetry run python manage.py migrate
 poetry run python manage.py runserver 0.0.0.0:8000
 ```
 
@@ -356,10 +350,6 @@ docker compose up --build
 ```bash
 cp .env.example .env
 ```
-
-Примечание: `schema.sql` применяется автоматически при первом запуске контейнера базы
-данных. Если база уже создана, нужно удалить volume `postgres_data` для повторного
-инициализирования.
 
 ---
 
@@ -439,4 +429,4 @@ curl -X GET "http://127.0.0.1:8000/bookings/list?room_id=1"
 
 - Формат данных — JSON (а не form-urlencoded), чтобы соответствовать требованию JSON API.
 - Эндпоинт списка броней — `/bookings/list`, как в примерах задания.
-- Миграции не используются для запуска, таблицы создаются через `schema.sql`.
+- Используются миграции Django для создания таблиц.
